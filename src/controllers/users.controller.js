@@ -16,9 +16,9 @@ const create = catchError(async(req, res) => {
     const user = await User.create({...req.body, password: hashedPassword});
     const code = require('crypto').randomBytes(32).toString("hex")
     await sendEmail({
-        to: 'cbermudezg7@gmail.com',
-        subject: 'Email de prueba',
-        html: `<h5>Link: </h5><a href="${process.env.FRONT_URL}#/verify_email/${code}">Verifica tu email</a>`
+        to: req.body.email,
+        subject: 'Registro de usuario',
+        html: `<h5>Link: </h5><a href="${req.body.frontUrlBase}#/verify_email/${code}">Verifica tu email</a>`
     })
     const createCode = await Code.create({
         code,
@@ -76,7 +76,7 @@ const resetPassword = catchError(async(req, res)=>{
     await sendEmail({
         to: email,
         subject: 'Recuperación de contraseña',
-        html: `<h5>Link: </h5><a href="${process.env.FRONT_URL}#/reset_password/${code}">Recupera tu contraseña</a>`
+        html: `<h5>Link: </h5><a href="${req.body.frontUrlBase}#/reset_password/${code}">Recupera tu contraseña</a>`
     })
     const createCode = await Code.create({
         code,
